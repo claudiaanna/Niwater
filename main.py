@@ -1,4 +1,4 @@
-# from smbus import SMBus
+from smbus import SMBus
 import time
 import noteCenter
 import logging
@@ -13,7 +13,7 @@ PTN = 0x43
 RES = 255
 
 SLEEP_TIME = 7200 #2h
-# bus = SMBus(1)
+bus = SMBus(1)
 
 filename = ('logfile_Niwater.log')
 logging.basicConfig(level=logging.INFO,
@@ -31,7 +31,7 @@ lastSts = -1
 lastHmt = -1
 
 while True:
-    currentHmt = 300 #readRawData(HMT)
+    currentHmt = readRawData(HMT)
     if abs(currentHmt - lastHmt) > 10:
         if currentHmt < 300:
             message = 'Soil is dry. Watering is needed!'
@@ -48,5 +48,4 @@ while True:
 
         lastSts = currentSts
         lastHmt = currentHmt
-    break
-    # time.sleep(SLEEP_TIME)
+    time.sleep(SLEEP_TIME)
