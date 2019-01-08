@@ -1,4 +1,4 @@
-from smbus import SMBus
+# from smbus import SMBus
 import time
 import noteCenter
 import logging
@@ -13,20 +13,12 @@ PTN = 0x43
 RES = 255
 
 SLEEP_TIME = 7200 #2h
-bus = SMBus(1)
+# bus = SMBus(1)
 
-now = datetime.datetime.now()
-filename = now.strftime('logfile_%d%m%Y_%H%M.log')
-logging.basicConfig(level=logging.DEBUG,
+filename = ('logfile_Niwater.log')
+logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s %(levelname)-5s %(message)s', datefmt='%m-%d %H:%M',
                     filename=filename, filemode='a')
-
-with open("emailCredentials.json", "r") as data:
-    form = json.load(data)
-
-sender = form['sender']
-receiver = form['receiver']
-subject = form['subject']
 
 def readRawData(channel):
     bus.write_byte(ads, channel)
@@ -37,27 +29,24 @@ def readVoltageData(channel):
 
 lastSts = -1
 lastHmt = -1
+
 while True:
-    currentHmt = readRawData(HMT)
-    measValue = 'Measured humidity: {}'.format(currentHmt)
+    currentHmt = 300 #readRawData(HMT)
     if abs(currentHmt - lastHmt) > 10:
-        
         if currentHmt < 300:
             message = 'Soil is dry. Watering is needed!'
             currentSts = 1
-        
         elif 300 <= currentHmt < 700:
             message = 'Soil is properly moist.'
             currentSts = 2
-
         elif 700 <= currentHmt:
             message = 'Soil is too damp!'
             currentSts = 3
-
-        logging.info('{} {}'.format(measValue, message))
+        logging.info('{} {}'.format('Measured humidity: {} '.format(currentHmt), message))
         if (currentSts != lastSts):
-            logging.info(noteCenter.sendEmail(sender, receiver, subject, message))
+            noteCenter.sendNotification(message)
 
         lastSts = currentSts
         lastHmt = currentHmt
-        time.sleep(SLEEP_TIME)
+    break
+    # time.sleep(SLEEP_TIME)
