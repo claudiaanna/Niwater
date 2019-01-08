@@ -2,8 +2,6 @@ from smbus import SMBus
 import time
 import noteCenter
 import logging
-import json
-import datetime
 
 ADS = 0x48
 LGT = 0x40
@@ -15,7 +13,7 @@ RES = 255
 SLEEP_TIME = 7200 #2h
 bus = SMBus(1)
 
-filename = ('logfile_Niwater.log')
+filename = 'logfile_Niwater.log'
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s %(levelname)-5s %(message)s', datefmt='%m-%d %H:%M',
                     filename=filename, filemode='a')
@@ -42,8 +40,8 @@ while True:
         elif 700 <= currentHmt:
             message = 'Soil is too damp!'
             currentSts = 3
-        logging.info('{} {}'.format('Measured humidity: {} '.format(currentHmt), message))
-        if (currentSts != lastSts):
+        logging.info('Measured humidity: {}. {} '.format(currentHmt, message))
+        if currentSts != lastSts:
             noteCenter.sendNotification(message)
 
         lastSts = currentSts
