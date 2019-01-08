@@ -52,7 +52,7 @@ def sendEmail(message):
         server.login(username, password)
         server.sendmail(sender, receiver, msg)
         server.quit()    
-        logging.info('Email was successfuly send.')
+        logging.info('Email was successfuly sent.')
     except Exception as e:
         logging.info('Sending email failed. ' + str(e))
 
