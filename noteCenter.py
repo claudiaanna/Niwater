@@ -5,7 +5,6 @@ import logging
 
 EMAIL = False
 SMS = False
-BOTH = False
 
 try:
     with open("smsCredentials.json", "r") as data:
@@ -22,11 +21,6 @@ try:
 except FileNotFoundError:
     EMAIL = False
     logging.info('No email credentials file.')
-
-if SMS and EMAIL:
-    BOTH = True
-else:
-    BOTH = False
 
 def sendSMS(message):
     phoneNo = formSMS['phoneNumber']
@@ -63,7 +57,7 @@ def sendEmail(message):
         logging.info('Sending email failed. ' + str(e))
 
 def sendNotification(message):
-    if BOTH:
+    if SMS and EMAIL:
         sendEmail(message)
         sendSMS(message)
     elif EMAIL:
